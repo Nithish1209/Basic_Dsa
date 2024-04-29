@@ -649,60 +649,65 @@ int main() {
 #####################################################################################Sum of subsets
 #include <stdio.h>
 
-void printSubset(int subset[], int subsetSize) {
-    printf("{ ");
-    int i;
-    for (i = 0; i < subsetSize; i++) {
-        printf("%d ", subset[i]);
-    }
-    printf("}\n");
-}
-
-
-void findSubsets(int set[], int subset[], int setSize, int subsetSize, int index, int targetSum) {
-    int sum = 0;
-
-    int i;
-    for (i = 0; i < subsetSize; i++) {
-        sum += subset[i];
-    }
-
+int printSubsets(int arr[], int n, int target, int index, int subset[], int subsetSize) {
     
-    if (sum == targetSum) {
-        printSubset(subset, subsetSize);
+    if (target == 0) {
+        printf("Subset found: ");
+        int i;
+        for ( i = 0; i < subsetSize; i++) {
+            printf("%d ", subset[i]);
+        }
+        printf("\n");
+        return 1; 
+    }
+    
+    
+    if (target < 0 || index >= n) {
+        return 0; 
     }
 
-    
-    if (index >= setSize) {
-        return;
-    }
+
+    subset[subsetSize] = arr[index]; 
+    int include = printSubsets(arr, n, target - arr[index], index + 1, subset, subsetSize + 1);
 
     
-    subset[subsetSize] = set[index];
-    findSubsets(set, subset, setSize, subsetSize + 1, index + 1, targetSum);
+    int exclude = printSubsets(arr, n, target, index + 1, subset, subsetSize);
 
-    
-    findSubsets(set, subset, setSize, subsetSize, index + 1, targetSum);
+
+    return include + exclude;
 }
 
 int main() {
-    
-    int set[] = {1, 2, 3, 4, 5};
-    int setSize = sizeof(set) / sizeof(set[0]);
+    int n, i;
 
-    
-    int subset[setSize];
+    printf("Enter the size of the array: ");
+    scanf("%d", &n);
 
+    int arr[n];
 
-    int targetSum = 6;
+    printf("Enter the array elements: ");
+    for (i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
 
-    printf("Subsets with sum %d are:\n", targetSum);
+    printf("Array elements: ");
+    for (i = 0; i < n; i++) {
+        printf("%d  ", arr[i]);
+    }
+    printf("\n");
 
+    int target;
+    printf("Enter the target sum: ");
+    scanf("%d", &target);
 
-    findSubsets(set, subset, setSize, 0, 0, targetSum);
+    int subset[n]; // To store the elements of a subset
+    int count = printSubsets(arr, n, target, 0, subset, 0);
+
+    printf("Total number of subsets that sum to %d: %d\n", target, count);
 
     return 0;
 }
+
 ##################################################################################Multistage graph
 #include <stdio.h>
 #include <limits.h>
