@@ -895,6 +895,771 @@ int main() {
 }
 
 
+##############################################rishi networks ##################################
+	    1. BINARY SEARCH
+#include<stdio.h>
+int binarySearch(int arr[], int left, int right, int key)
+{
+	while(left <= right)
+	{
+		int mid = (left + right)/2;
+		if(arr[mid] == key)
+			return mid;
+		if(arr[mid] > key)
+			right = mid-1;
+		else
+			left = mid+1;
+	}
+	return -1;
+}
+
+int main()
+{
+	int n,key;
+	printf("Enter no. of elements : ");
+	scanf("%d",&n);
+	int arr[n],i;
+	printf("Enter the elements : ");
+	for(i = 0; i<n; i++)
+		scanf("%d",&arr[i]);
+	printf("Enter the key element : ");
+	scanf("%d",&key);
+	int pos = binarySearch(arr,0,n-1,key);
+	if(pos == -1)
+		printf("Key element not found\n");
+	else
+		printf("Key element found at index %d\n",pos);
+	return 0;
+}
+
+2. MIN-MAX ALGORITHM
+#include<stdio.h>
+void min_max(int arr[],int low, int n)
+{
+	int min = arr[low];
+	int max = arr[low];
+	int i;
+	for(i=low;i<n;i++)
+	{
+		if(arr[i]<min)
+			min = arr[i];
+		if(arr[i]>max)
+			max = arr[i];
+	}
+	printf("Minimum element : %d",min);
+	printf("Maximum element : %d",max);
+}
+
+int main()
+{
+	int n;
+	printf("Enter the number of elements: ");
+	scanf("%d",&n);
+	int arr[n],i;
+	printf("Enter the elements: ");
+	for(i=0;i<n;i++)
+		scanf("%d",&arr[i]);
+	min_max(arr,0,n);
+	return 0;
+}
+
+3. 0/1 KNAPSACK USING DYNAMIC PROGRAMMING
+#include<stdio.h>
+int max(int a, int b)
+{
+	return (a>b)?a:b;
+}
+
+int knapsack(int W, int wt[], int prof[], int n)
+{
+	int i,w;
+	int K[n+1][W+1];
+	for(i=0; i<=n; i++)
+	{
+		for(w=0; w<=W; w++)
+		{
+			if(i==0 || w==0)
+				K[i][w] = 0;
+			else if(wt[i-1] <= w)
+				K[i][w] = max(prof[i-1]+K[i-1][w-wt[i-1]], K[i-1][w]);
+			else
+				K[i][w] = K[i-1][w];
+		}
+	}
+	return K[n][W];
+}
+
+int main()
+{
+	int n,W;
+	printf("Enter no. of objects : ");
+	scanf("%d",&n);
+	int wt[n], prof[n],i;
+	for(i=0; i<n;i++)
+	{
+		printf("Enter weight of object %d: ",i+1);
+		scanf("%d",&wt[i]);
+		printf("Enter profit of object %d: ",i+1);
+		scanf("%d",&prof[i]);
+	}
+	printf("Enter capacity of bag : ");
+	scanf("%d",&W);
+	printf("Maximum profit that can be obtained is %d\n",knapsack(W,wt,prof,n));
+}
+
+4. N QUEENS PROBLEM USING BACKTRACKING 
+#include <stdio.h>
+#include <stdbool.h>
+void printSolution(int N, int board[N][N]) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (board[i][j])
+                printf("Q ");
+            else
+                printf(". ");
+        }
+        printf("\n");
+    }
+}
+
+bool isSafe(int N, int board[N][N], int row, int col) {
+    int i, j;
+    for (i = 0; i < col; i++) // Check this row on left side
+        if (board[row][i])
+            return false;
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--) // Check upper diagonal on left side
+        if (board[i][j])
+            return false;
+    for (i = row, j = col; j >= 0 && i < N; i++, j--) // Check lower diagonal on left side
+        if (board[i][j])
+            return false;
+    return true;
+}
+
+bool solveNQUtil(int N, int board[N][N], int col) {
+    if (col >= N) 
+        return true;
+    for (int i = 0; i < N; i++) {
+        if (isSafe(N, board, i, col)) {
+            board[i][col] = 1;
+            if (solveNQUtil(N, board, col + 1))
+                return true;
+            board[i][col] = 0; // BACKTRACK
+        }
+    }
+    return false;
+}
+
+bool solveNQ(int N) 
+{
+    int board[N][N];
+    for (int i = 0; i < N; i++)
+        for (int j = 0; j < N; j++)
+            board[i][j] = 0;
+    if (!solveNQUtil(N, board, 0)) {
+        printf("Solution does not exist");
+        return false;
+    }
+    printSolution(N, board);
+    return true;
+}
+
+int main() 
+{
+    int N;
+    printf("Enter the number of queens: ");
+    scanf("%d", &N);
+    solveNQ(N);
+    return 0;
+}
+
+5. MERGE SORT
+#include <stdio.h> 
+void merge(int a[], int beg, int mid, int end)    
+{    
+    int i, j, k;  
+    int n1 = mid - beg + 1;    
+    int n2 = end - mid;    
+    int LeftArray[n1], RightArray[n2]; 
+    for (int i = 0; i < n1; i++)    
+        LeftArray[i] = a[beg + i];    
+    for (int j = 0; j < n2; j++)    
+        RightArray[j] = a[mid + 1 + j];    
+    i = 0; /* initial index of first sub-array */  
+    j = 0; /* initial index of second sub-array */   
+    k = beg;  /* initial index of merged sub-array */  
+    while (i < n1 && j < n2)    
+    {    
+        if(LeftArray[i] <= RightArray[j])    
+        {    
+            a[k] = LeftArray[i];    
+            i++;    
+        }    
+        else    
+        {    
+            a[k] = RightArray[j];    
+            j++;    
+        }    
+        k++;    
+    }    
+    while (i<n1)    
+    {    
+        a[k] = LeftArray[i];    
+        i++;    
+        k++;    
+    }    
+    while (j<n2)    
+    {    
+        a[k] = RightArray[j];    
+        j++;    
+       k++;    
+    }    
+}    
+
+void mergeSort(int a[], int beg, int end)  
+{  
+    if (beg < end)   
+    {  
+        int mid = (beg + end) / 2;  
+        mergeSort(a, beg, mid);  
+        mergeSort(a, mid + 1, end);  
+        merge(a, beg, mid, end);  
+    }  
+}  
+
+void printArray(int a[], int n)  
+{  
+    int i;  
+    for (i = 0; i < n; i++)  
+        printf("%d ", a[i]);  
+    printf("\n");  
+}  
+
+int main()  
+{  
+    int n;
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+    int a[n];
+    printf("Enter the elements: ");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+    printf("Before sorting, array elements are:\n");
+    printArray(a, n);  
+    mergeSort(a, 0, n - 1);  
+    printf("After sorting, array elements are:\n");  
+    printArray(a, n);  
+    return 0;  
+}  
+
+6. QUICK SORT
+#include<stdio.h>
+void quicksort(int number[25],int first,int last){
+   int i, j, pivot, temp;
+   if(first<last){
+      pivot=first;
+      i=first;
+      j=last;
+      while(i<j){
+         while(number[i]<=number[pivot]&&i<last)
+         i++;
+         while(number[j]>number[pivot])
+         j--;
+         if(i<j){
+            temp=number[i];
+            number[i]=number[j];
+            number[j]=temp;
+         }
+      }
+      temp=number[pivot];
+      number[pivot]=number[j];
+      number[j]=temp;
+      quicksort(number,first,j-1);
+      quicksort(number,j+1,last);
+   }
+}
+int main(){
+   int i, count, number[25];
+   printf("How many elements are u going to enter?: ");
+   scanf("%d",&count);
+   printf("Enter %d elements: ", count);
+   for(i=0;i<count;i++)
+   scanf("%d",&number[i]);
+   quicksort(number,0,count-1);
+   printf("Order of Sorted elements: ");
+   for(i=0;i<count;i++)
+   printf(" %d",number[i]);
+   return 0;
+}
+
+7. STRASSENS MATRIX MULTIPLICATION
+#include<stdio.h>
+int main(){
+  int a[2][2],b[2][2],c[2][2],i,j;
+  int m1,m2,m3,m4,m5,m6,m7;
+
+  printf("Enter the 4 elements of first matrix: ");
+  for(i=0;i<2;i++)
+      for(j=0;j<2;j++)
+           scanf("%d",&a[i][j]);
+
+  printf("Enter the 4 elements of second matrix: ");
+  for(i=0;i<2;i++)
+      for(j=0;j<2;j++)
+           scanf("%d",&b[i][j]);
+
+  printf("\nThe first matrix is\n");
+  for(i=0;i<2;i++){
+      printf("\n");
+      for(j=0;j<2;j++)
+           printf("%d\t",a[i][j]);
+  }
+
+  printf("\nThe second matrix is\n");
+  for(i=0;i<2;i++){
+      printf("\n");
+      for(j=0;j<2;j++)
+           printf("%d\t",b[i][j]);
+  }
+
+  m1= (a[0][0] + a[1][1])*(b[0][0]+b[1][1]);
+  m2= (a[1][0]+a[1][1])*b[0][0];
+  m3= a[0][0]*(b[0][1]-b[1][1]);
+  m4= a[1][1]*(b[1][0]-b[0][0]);
+  m5= (a[0][0]+a[0][1])*b[1][1];
+  m6= (a[1][0]-a[0][0])*(b[0][0]+b[0][1]);
+  m7= (a[0][1]-a[1][1])*(b[1][0]+b[1][1]);
+
+  c[0][0]=m1+m4-m5+m7;
+  c[0][1]=m3+m5;
+  c[1][0]=m2+m4;
+  c[1][1]=m1-m2+m3+m6;
+
+   printf("\nAfter multiplication using \n");
+   for(i=0;i<2;i++){
+      printf("\n");
+      for(j=0;j<2;j++)
+           printf("%d\t",c[i][j]);
+   }
+   return 0;
+}
+
+8. JOB SEQUENCING WITH DEADLINES
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct {
+    char id;
+    int deadline;
+    int profit;
+} Job;
+
+int compare(const void *a, const void *b) {
+    return ((Job *)b)->profit - ((Job *)a)->profit;
+}
+
+void jobSequencing(Job jobs[], int n) {
+    qsort(jobs, n, sizeof(Job), compare);
+    char slot[n];
+    for (int i = 0; i < n; i++) 
+        slot[i] = -1;
+    for (int i = 0; i < n; i++)
+        for (int j = jobs[i].deadline - 1; j >= 0; j--)
+        if (slot[j] == -1) {
+            slot[j] = jobs[i].id;
+            break;
+        }
+    printf("Job sequence: ");
+    for (int i = 0; i < n; i++)
+        if (slot[i] != -1) 
+            printf("%c ", slot[i]);
+    printf("\n");
+}
+
+int main() {
+    int n;
+    printf("Enter the number of jobs: ");
+    scanf("%d", &n);
+    Job *jobs = (Job *)malloc(n * sizeof(Job));
+    for (int i = 0; i < n; i++) {
+        printf("Enter details of job %d:\n", i + 1);
+        printf("ID: ");
+        scanf(" %c", &jobs[i].id);
+        printf("Deadline: ");
+        scanf("%d", &jobs[i].deadline);
+        printf("Profit: ");
+        scanf("%d", &jobs[i].profit);
+    }
+    jobSequencing(jobs, n);
+    free(jobs);
+    return 0;
+}
+
+9. Single Source Shortest Path (Greedy algorithm)
+#include <stdio.h>
+#include <stdbool.h>
+#include <limits.h>
+
+#define V 6 // Number of vertices
+
+// Function to find the vertex with the minimum distance value, from the set of vertices not yet included in the shortest path tree
+int minDistance(int dist[], bool sptSet[]) {
+    int min = INT_MAX, min_index,v;
+
+    for (v = 0; v < V; v++)
+        if (!sptSet[v] && dist[v] <= min)
+            min = dist[v], min_index = v;
+
+    return min_index;
+}
+
+// Function to print the constructed distance array
+void printSolution(int dist[]) {
+	int i;
+    printf("Vertex   Distance from Source\n");
+    for (i = 0; i < V; i++)
+        printf("%d \t\t %d\n", i, dist[i]);
+}
+
+void dijkstra(int graph[V][V], int src) {
+	int i,count,v;
+    int dist[V];
+    bool sptSet[V]; 
+    for (i = 0; i < V; i++)
+        dist[i] = INT_MAX, sptSet[i] = false;
+
+    dist[src] = 0;
+
+    // Find shortest path for all vertices
+    for (count = 0; count < V - 1; count++) {
+        // Pick the minimum distance vertex from the set of vertices not yet processed. u is always equal to src in the first iteration.
+        int u = minDistance(dist, sptSet);
+        sptSet[u] = true;
+
+        for (v = 0; v < V; v++)
+            if (!sptSet[v] && graph[u][v] && dist[u] != INT_MAX && dist[u] + graph[u][v] < dist[v])
+                dist[v] = dist[u] + graph[u][v];
+    }
+    printSolution(dist);
+}
+
+int main() {
+    int numEdges;
+    printf("Enter the number of edges: ");
+    scanf("%d", &numEdges);
+    int graph[V][V] = {0};
+    printf("Enter the edges and their weights:\n");
+    for (int i = 0; i < numEdges; i++) {
+        int u, v, weight;
+        scanf("%d %d %d", &u, &v, &weight);
+        graph[u][v] = weight;
+    }
+    int source;
+    printf("Enter the source vertex: ");
+    scanf("%d", &source);
+    dijkstra(graph, source); // Find shortest paths from the source vertex
+
+    return 0;
+}
+
+
+10. Single Source Shortest Path (Dynamic Programming algorithm)
+#include <stdio.h>
+#include <limits.h>
+
+struct Edge {
+    int src, dest, weight;
+};
+
+struct Graph {
+    int V, E;
+    struct Edge* edge;
+};
+
+struct Graph* createGraph(int V, int E) {
+    struct Graph* graph = (struct Graph*)malloc(sizeof(struct Graph));
+    graph->V = V;
+    graph->E = E;
+    graph->edge = (struct Edge*)malloc(E * sizeof(struct Edge));
+    return graph;
+}
+
+
+void printArr(int dist[], int n) {
+	int i;
+    printf("Vertex   Distance from Source\n");
+    for (i = 0; i < n; ++i)
+        printf("%d \t\t %d\n", i, dist[i]);
+}
+
+void bellmanFord(struct Graph* graph, int src) {
+	int i,j;
+    int V = graph->V;
+    int E = graph->E;
+    int dist[V];
+    
+    for (i = 0; i < V; i++)
+        dist[i] = INT_MAX;
+    dist[src] = 0;
+
+    for (i = 1; i <= V - 1; i++) {
+        for (j = 0; j < E; j++) {
+            int u = graph->edge[j].src;
+            int v = graph->edge[j].dest;
+            int weight = graph->edge[j].weight;
+            if (dist[u] != INT_MAX && dist[u] + weight < dist[v])
+                dist[v] = dist[u] + weight;
+        }
+    }
+
+    for (i = 0; i < E; i++) {
+        int u = graph->edge[i].src;
+        int v = graph->edge[i].dest;
+        int weight = graph->edge[i].weight;
+        if (dist[u] != INT_MAX && dist[u] + weight < dist[v]) {
+            printf("Graph contains negative weight cycle\n");
+            return; 
+        }
+    }
+    printArr(dist, V);
+    return;
+}
+
+int main() {
+    int V = 5; 
+    int E = 8; 
+    struct Graph* graph = createGraph(V, E);
+
+    // add edge 0-1 (or A-B in above figure)
+    graph->edge[0].src = 0;
+    graph->edge[0].dest = 1;
+    graph->edge[0].weight = -1;
+
+    // add edge 0-2 (or A-C in above figure)
+    graph->edge[1].src = 0;
+    graph->edge[1].dest = 2;
+    graph->edge[1].weight = 4;
+
+    // add edge 1-2 (or B-C in above figure)
+    graph->edge[2].src = 1;
+    graph->edge[2].dest = 2;
+    graph->edge[2].weight = 3;
+
+    // add edge 1-3 (or B-D in above figure)
+    graph->edge[3].src = 1;
+    graph->edge[3].dest = 3;
+    graph->edge[3].weight = 2;
+
+    // add edge 1-4 (or B-E in above figure)
+    graph->edge[4].src = 1;
+    graph->edge[4].dest = 4;
+    graph->edge[4].weight = 2;
+
+    // add edge 3-2 (or D-C in above figure)
+    graph->edge[5].src = 3;
+    graph->edge[5].dest = 2;
+    graph->edge[5].weight = 5;
+
+    // add edge 3-1 (or D-B in above figure)
+    graph->edge[6].src = 3;
+    graph->edge[6].dest = 1;
+    graph->edge[6].weight = 1;
+
+    // add edge 4-3 (or E-D in above figure)
+    graph->edge[7].src = 4;
+    graph->edge[7].dest = 3;
+    graph->edge[7].weight = -3;
+
+    // Function call
+    bellmanFord(graph, 0);
+
+    return 0;
+}
+
+11. Sum Of Subsets (Backtracking)
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX_SIZE 20
+void printSub(bool subset[], int size) {
+    int i;
+    printf("{ ");
+    for (i = 0; i < size; i++) {
+        if (subset[i])
+            printf("%d ", i + 1);
+    }
+    printf("}\n");
+}
+
+void findsubsets(int arr[], int size, bool subset[], int index, int target) {
+    if (target == 0) {
+        printSub(subset, size);
+        return;
+    }
+    if (index >= size || target < 0)
+        return;
+    subset[index] = true;
+    findsubsets(arr, size, subset, index + 1, target - arr[index]);
+    subset[index] = false;
+    findsubsets(arr, size, subset, index + 1, target);
+}
+
+int main() {
+    int i, si, target;
+    int arr[MAX_SIZE];
+    bool subset[MAX_SIZE] = {false};
+
+    printf("Enter the size: ");
+    scanf("%d", &si);
+    printf("Enter the array elements: ");
+    for (i = 0; i < si; i++) {
+        scanf("%d", &arr[i]);
+    }
+    printf("Enter target sum: ");
+    scanf("%d", &target);
+    printf("Subsets with given sum:\n");
+    findsubsets(arr, si, subset, 0, target);
+    return 0;
+}
+
+12. MultiStage Graph algorithm using Dynamic Programming
+#include <stdio.h>
+#include<stdlib.h>
+#include <limits.h>
+int shortestDistance(int VERTICES, int graph[VERTICES][VERTICES], int stages);
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int main() {
+    int n;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+    int graph[n][n];
+    printf("Enter the adjacency matrix:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+    int stages;
+    printf("Enter the number of stages: ");
+    scanf("%d", &stages);
+    int shortestDist = shortestDistance(n, graph, stages);
+    printf("Shortest Distance: %d\n", shortestDist);
+    return 0;
+}
+
+int shortestDistance( int n, int graph[n][n], int stages) {
+     int *dist = (int *)malloc(n * sizeof(int));
+    if (dist == NULL) {
+        printf("Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < n; i++) {
+        dist[i] = INT_MAX;
+    }
+    dist[0] = 0;
+    for (int i = 1; i < n; i++) {
+        dist[i] = INT_MAX;
+        for (int j = i - 1; j >= 0 && i - j <= stages; j--) {
+            if (graph[j][i] != -1 && dist[j] != INT_MAX) {
+                dist[i] = min(dist[i], dist[j] + graph[j][i]);
+            }
+        }
+    }
+    return dist[n - 1];
+}
+13. All Pairs Shortest Path using Dynamic Programming
+#include <stdio.h>
+#define INF 99999
+
+void printSolution(int dist[][100], int V) {
+    printf("The following matrix shows the shortest distances between every pair of vertices:\n");
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (dist[i][j] == INF)
+                printf("%7s", "INF");
+            else
+                printf("%7d", dist[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void floydWarshall(int graph[][100], int V) {
+    int dist[100][100], i, j, k;
+    for (i = 0; i < V; i++)
+        for (j = 0; j < V; j++)
+            dist[i][j] = graph[i][j];
+    for (k = 0; k < V; k++) {
+        for (i = 0; i < V; i++) {
+            for (j = 0; j < V; j++) {
+                if (dist[i][k] + dist[k][j] < dist[i][j])
+                    dist[i][j] = dist[i][k] + dist[k][j];
+            }
+        }
+    }
+    printSolution(dist, V);
+}
+
+int main() {
+    int V, i, j;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &V);
+    int graph[100][100];
+    printf("Enter the weight matrix for the graph (enter 99999 for infinity):\n");
+    for (i = 0; i < V; i++) {
+        for (j = 0; j < V; j++) {
+            scanf("%d", &graph[i][j]);
+            if (graph[i][j] == 0 && i != j)  
+                graph[i][j] = INF;
+        }
+    }
+    floydWarshall(graph, V);
+    return 0;
+}
+
+
+14. Optimal Binary Search Tree 
+#include <stdio.h>
+#include <limits.h>
+
+int sum(int freq[], int i, int j) {
+    int s = 0;
+    for (int k = i; k <= j; k++)
+        s += freq[k];
+    return s;
+}
+int optCost(int freq[], int i, int j) {
+    if (j < i)   
+        return 0;
+    if (j == i)
+        return freq[i];
+    int fsum = sum(freq, i, j);
+    int min = INT_MAX;
+    for (int r = i; r <= j; ++r) {
+        int cost = optCost(freq, i, r - 1) + optCost(freq, r + 1, j);
+        if (cost < min)
+            min = cost;
+    }
+    return min + fsum;
+}
+int optimalSearchTree(int freq[], int n) {
+    return optCost(freq, 0, n - 1);
+}
+int main() {
+    int n;
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+    int keys[n], freq[n];
+    printf("Enter the keys:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &keys[i]);
+    printf("Enter the frequencies:\n");
+    for (int i = 0; i < n; i++)
+        scanf("%d", &freq[i]);
+    printf("Cost of Optimal BST is %d\n", optimalSearchTree(freq, n));
+    return 0;
+}
 
 
 
